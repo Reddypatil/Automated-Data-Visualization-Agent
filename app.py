@@ -28,9 +28,11 @@ if uploaded_file:
     st.json(detect_anomalies(df))
 
     st.subheader("AI Visualizations")
+    st.write("The AI has selected the most relevant visualizations for your data based on data types and statistical properties:")
     for chart in ai_chart_selection(df):
         st.info(chart["reason"])
         generate_chart(df, chart)
+        st.divider()
 
     st.subheader("Insights")
     for i in generate_insights(df):
