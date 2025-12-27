@@ -1,4 +1,9 @@
 import pandas as pd
 
 def load_data(f):
- return pd.read_csv(f) if f.name.endswith('csv') else pd.read_excel(f)
+ if f.name.endswith('csv'):
+  return pd.read_csv(f)
+ elif f.name.endswith('json'):
+  return pd.read_json(f)
+ else:
+  return pd.read_excel(f)
