@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+matplotlib
+scipy
+matplotlib
+numpy
+pandas
+scipy
+streamlit
