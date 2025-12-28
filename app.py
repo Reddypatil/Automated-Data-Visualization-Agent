@@ -16,18 +16,197 @@ from time_series_analysis import detect_datetime_columns, time_series_analysis
 from predictive_models import simple_regression, classification_model
 from ai_insights import generate_ai_insights
 
-st.set_page_config(page_title="Advanced Automated Data Visualization Agent", layout="wide")
-st.title("🎯 Advanced Automated Data Visualization Agent")
+# Page configuration with custom theme
+st.set_page_config(
+    page_title="DataWizard - AI Analytics",
+    page_icon="🧙‍♂️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-st.markdown("Upload your dataset and get AI-powered analysis including visualizations, insights, and predictions!")
+# Custom CSS for beautiful design
+st.markdown("""
+<style>
+    /* Main container */
+    .main {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    /* Header styling */
+    .header-title {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 20px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+        margin-bottom: 30px;
+    }
+    
+    .header-title h1 {
+        font-size: 3em;
+        font-weight: 800;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .header-title p {
+        font-size: 1.1em;
+        margin: 10px 0 0 0;
+        opacity: 0.95;
+    }
+    
+    /* Feature cards */
+    .feature-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border-top: 4px solid #667eea;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 30px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        color: #667eea;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    /* Metric cards */
+    .stMetric {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #667eea;
+    }
+    
+    /* Alert boxes */
+    .stSuccess {
+        background-color: rgba(16, 185, 129, 0.1);
+        border-left: 4px solid #10b981;
+    }
+    
+    .stInfo {
+        background-color: rgba(102, 126, 234, 0.1);
+        border-left: 4px solid #667eea;
+    }
+    
+    .stWarning {
+        background-color: rgba(245, 158, 11, 0.1);
+        border-left: 4px solid #f59e0b;
+    }
+    
+    /* Dataframe styling */
+    .stDataFrame {
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* File uploader */
+    .stFileUploader {
+        border: 2px dashed #667eea;
+        border-radius: 12px;
+        padding: 30px;
+        background-color: rgba(102, 126, 234, 0.05);
+    }
+    
+    /* Divider */
+    hr {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #667eea, transparent);
+        margin: 30px 0;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader("📁 Upload Dataset", type=["csv","xlsx","json"])
+# Header
+st.markdown("""
+<div class="header-title">
+    <h1>🧙‍♂️ DataWizard</h1>
+    <p>AI-Powered Data Analytics & Visualization Platform</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+### 📊 Transform Your Data Into Intelligence
+Upload your dataset and unlock powerful insights with AI-driven analysis, beautiful visualizations, and predictive intelligence!
+""")
+
+# Sidebar with feature overview
+with st.sidebar:
+    st.title("🎯 Quick Guide")
+    st.markdown("""
+    ### Features:
+    - 📊 **EDA** - Exploratory data analysis
+    - 🔍 **Quality** - Data quality metrics
+    - 🎨 **Visualizations** - AI-selected charts
+    - 📈 **Analytics** - Advanced statistics
+    - 🤖 **AI Insights** - Smart recommendations
+    - ⚡ **Predictions** - ML models
+    - 📄 **Reports** - Full analysis export
+    """)
+    st.divider()
+    st.markdown("**Tips:**")
+    st.markdown("• Start with small datasets")
+    st.markdown("• Check data quality first")
+    st.markdown("• Use AI insights for understanding")
+
+# File uploader
+st.markdown("### 📁 Upload Your Data")
+uploaded_file = st.file_uploader("Drag and drop or browse", type=["csv","xlsx","json"])
 
 if uploaded_file:
     df = preprocess_data(load_data(uploaded_file))
-    st.success(f"✅ Dataset loaded successfully! ({len(df)} rows, {len(df.columns)} columns)")
+    st.success(f"✅ Loaded: {len(df)} rows × {len(df.columns)} columns")
     
+    # Data preview
     with st.expander("📋 View Data Preview", expanded=True):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("📊 Rows", len(df))
+        with col2:
+            st.metric("📌 Columns", len(df.columns))
+        with col3:
+            st.metric("🔢 Numeric", len(df.select_dtypes(include='number').columns))
         st.dataframe(df.head(10), use_container_width=True)
     
     st.divider()
@@ -45,36 +224,38 @@ if uploaded_file:
     
     # Tab 1: EDA
     with tab1:
-        st.subheader("Exploratory Data Analysis")
+        st.markdown("## Exploratory Data Analysis")
         col1, col2, col3 = st.columns(3)
         eda = perform_eda(df)
         with col1:
-            st.metric("Total Rows", eda['rows'])
+            st.metric("📊 Total Rows", eda['rows'])
         with col2:
-            st.metric("Total Columns", eda['cols'])
+            st.metric("📌 Total Columns", eda['cols'])
         with col3:
-            st.metric("Numeric Cols", len(df.select_dtypes(include='number').columns))
+            st.metric("🔢 Numeric Cols", len(df.select_dtypes(include='number').columns))
+        
+        st.markdown("### Data Summary")
         st.json(eda)
         
-        st.subheader("Data Profiling")
+        st.markdown("### Data Profiling")
         profile = profile_data(df)
         st.json(profile)
     
     # Tab 2: Data Quality
     with tab2:
-        st.subheader("📊 Data Quality Report")
+        st.markdown("## 📊 Data Quality Report")
         quality = quality_report(df)
         st.info(data_quality_summary(df))
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Missing Values", sum([col['missing_count'] for col in quality['columns'].values()]))
+            st.metric("⚠️ Missing Values", sum([col['missing_count'] for col in quality['columns'].values()]))
         with col2:
-            st.metric("Duplicate Rows", quality['duplicates']['count'])
+            st.metric("♻️ Duplicate Rows", quality['duplicates']['count'])
         with col3:
-            st.metric("Memory Usage (MB)", quality['memory_usage_mb'])
+            st.metric("💾 Memory (MB)", quality['memory_usage_mb'])
         
-        st.subheader("Column Details")
+        st.markdown("### Column Details")
         quality_df = pd.DataFrame([
             {
                 'Column': col_name,
@@ -88,60 +269,78 @@ if uploaded_file:
     
     # Tab 3: Visualizations
     with tab3:
-        st.subheader("🎨 AI-Selected Visualizations")
-        st.write("The AI has selected the most relevant visualizations for your data:")
+        st.markdown("## 🎨 AI-Selected Visualizations")
+        st.info("🤖 The AI has chosen the best visualizations for your data type and structure")
         
-        for chart in ai_chart_selection(df):
+        for i, chart in enumerate(ai_chart_selection(df)):
+            col1, col2 = st.columns([1, 4])
+            with col1:
+                if '📊' in chart["reason"]:
+                    st.markdown("📊")
+                elif '📈' in chart["reason"]:
+                    st.markdown("📈")
+                elif '🔗' in chart["reason"]:
+                    st.markdown("🔗")
+                elif '📦' in chart["reason"]:
+                    st.markdown("📦")
+            with col2:
+                st.markdown(f"**{chart['reason'].split(':')[1].split('.')[0]}**")
+            
             st.info(chart["reason"])
             generate_chart(df, chart)
             st.divider()
         
         # Correlation Matrix
-        st.subheader("🔗 Correlation Analysis")
+        st.markdown("## 🔗 Correlation Analysis")
         corr = calculate_correlations(df)
         if corr is not None:
             plot_correlation_heatmap(corr)
             significant = get_significant_correlations(df, threshold=0.7)
             if significant:
-                st.write("**Strong Correlations Found:**")
+                st.success("**Strong Correlations Found:**")
                 for item in significant:
-                    st.write(f"• {item['var1']} ↔ {item['var2']}: {item['correlation']} ({item['interpretation']})")
+                    st.markdown(f"• **{item['var1']}** ↔ **{item['var2']}**: {item['correlation']} ({item['interpretation']})")
         else:
             st.warning("No numeric columns for correlation analysis")
     
     # Tab 4: Advanced Analytics
     with tab4:
-        st.subheader("📊 Statistical Analysis")
+        st.markdown("## 📊 Statistical Analysis")
         
         # Anomaly Detection
-        st.write("**🔴 Anomaly Detection (Z-score > 3)**")
+        st.markdown("### 🔴 Anomaly Detection (Z-score > 3)")
         anomalies = detect_anomalies(df)
         if any(anomalies.values()):
             st.json(anomalies)
         else:
-            st.success("No anomalies detected!")
+            st.success("✅ No anomalies detected!")
         
         # Detailed Outliers
-        st.write("**📍 Outlier Analysis**")
+        st.markdown("### 📍 Outlier Analysis")
         outliers = detailed_outliers(df)
         if outliers:
             for col, info in outliers.items():
-                with st.expander(f"{col} ({info['count']} outliers)"):
-                    st.write(f"Percentage: {info['percentage']}%")
-                    st.write(f"Mean: {info['mean']}, Std Dev: {info['std']}")
-                    st.write(f"Sample outlier values: {info['outlier_values']}")
+                with st.expander(f"{col} - {info['count']} outliers ({info['percentage']}%)"):
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Mean", info['mean'])
+                    with col2:
+                        st.metric("Std Dev", info['std'])
+                    with col3:
+                        st.metric("Threshold", info['threshold'])
+                    st.write(f"**Sample outlier values:** {info['outlier_values']}")
         else:
-            st.success("No outliers detected!")
+            st.success("✅ No outliers detected!")
         
         # Statistical Tests
-        st.write("**🧪 Correlation Statistical Tests**")
+        st.markdown("### 🧪 Correlation Statistical Tests")
         tests = statistical_tests(df)
         if tests:
             tests_df = pd.DataFrame(tests)
             st.dataframe(tests_df, use_container_width=True)
         
         # Time Series Analysis
-        st.write("**⏰ Time Series Analysis**")
+        st.markdown("### ⏰ Time Series Analysis")
         datetime_cols = detect_datetime_columns(df)
         if datetime_cols:
             date_col = st.selectbox("Select Date Column", datetime_cols)
@@ -152,22 +351,23 @@ if uploaded_file:
                 if analysis:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.metric("Date Range", analysis['date_range'])
+                        st.metric("📅 Date Range", analysis['date_range'])
                     with col2:
-                        st.metric("Total Days", analysis['total_days'])
+                        st.metric("📊 Days", analysis['total_days'])
                     with col3:
-                        st.metric("Mean Value", analysis['value_mean'])
+                        st.metric("📈 Mean", analysis['value_mean'])
                     with col4:
-                        st.metric("Trend", analysis['trend'])
+                        st.metric("📉 Trend", analysis['trend'])
                     plot_time_series(df_ts, date_col, value_col)
         else:
             st.info("No datetime columns detected for time series analysis")
     
     # Tab 5: AI Insights
     with tab5:
-        st.subheader("🤖 AI-Powered Insights")
-        if st.button("Generate AI Insights"):
-            with st.spinner("Analyzing your data..."):
+        st.markdown("## 🤖 AI-Powered Insights")
+        st.markdown("Get AI-generated recommendations and insights about your data")
+        if st.button("✨ Generate AI Insights"):
+            with st.spinner("🔮 Analyzing your data..."):
                 eda = perform_eda(df)
                 anomalies = detect_anomalies(df)
                 corr = calculate_correlations(df)
@@ -177,22 +377,22 @@ if uploaded_file:
     
     # Tab 6: Predictions
     with tab6:
-        st.subheader("⚡ Predictive Analytics")
+        st.markdown("## ⚡ Predictive Analytics")
         num_cols = df.select_dtypes(include='number').columns.tolist()
         
         if len(num_cols) >= 2:
             target = st.selectbox("Select Target Column", num_cols)
-            model_type = st.radio("Model Type", ["Regression", "Classification"])
+            model_type = st.radio("Model Type", ["📊 Regression", "📈 Classification"], horizontal=True)
             
-            if st.button("Train Model"):
+            if st.button("🚀 Train Model"):
                 with st.spinner("Training model..."):
-                    if model_type == "Regression":
+                    if "Regression" in model_type:
                         result = simple_regression(df, target)
                     else:
                         result = classification_model(df, target)
                     
                     if result:
-                        st.success("Model trained successfully!")
+                        st.success("✅ Model trained successfully!")
                         st.json(result)
                     else:
                         st.error("Could not train model with this data")
@@ -201,7 +401,7 @@ if uploaded_file:
     
     # Tab 7: Report
     with tab7:
-        st.subheader("📄 Comprehensive Report")
+        st.markdown("## 📄 Comprehensive Report")
         eda = perform_eda(df)
         insights = list(generate_insights(df))
         report_text = generate_report(eda, insights)
@@ -216,4 +416,38 @@ if uploaded_file:
             )
 
 else:
-    st.info("👆 Upload a CSV, Excel, or JSON file to get started!")
+    st.markdown("""
+    <div style="text-align: center; padding: 50px;">
+        <h2>👆 Get Started</h2>
+        <p style="font-size: 1.2em; color: #667eea;">Upload a CSV, Excel, or JSON file to unlock powerful data analysis</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Feature cards
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="feature-card">
+        <h3>📊 Smart Visualizations</h3>
+        <p>AI-selected charts that best represent your data</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="feature-card">
+        <h3>🤖 AI Insights</h3>
+        <p>Get intelligent recommendations powered by ChatGPT</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div class="feature-card">
+        <h3>⚡ Predictions</h3>
+        <p>Train ML models and make predictions</p>
+        </div>
+        """, unsafe_allow_html=True)
