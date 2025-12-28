@@ -8,3 +8,7 @@ reportlab
 reportlab
 scikit-learn
 seaborn
+openpyxl
+scikit-learn
+scipy
+shap
