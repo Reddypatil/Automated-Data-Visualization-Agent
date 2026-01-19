@@ -170,13 +170,34 @@ if uploaded_file:
     
     # Tab 3: Visualizations
     with tabs[2]:
-        st.markdown("## 🎨 AI-Selected Visualizations")
-        st.info("🤖 AI-chosen visualizations for your data")
+        viz_choice = st.radio("Visualization Mode", ["🤖 AI Recommended", "🔍 All Charts"], horizontal=True)
         
-        for chart in ai_chart_selection(df):
-            st.info(chart["reason"])
-            generate_chart(df, chart)
-            st.divider()
+        if viz_choice == "🤖 AI Recommended":
+            st.markdown("## 🎨 AI-Selected Visualizations")
+            st.info("🤖 AI-chosen visualizations for your data")
+            
+            for chart in ai_chart_selection(df):
+                st.info(chart["reason"])
+                generate_chart(df, chart)
+                st.divider()
+        else:
+            st.markdown("## 🔍 Explore All Visualizations")
+            
+            num_cols = df.select_dtypes(include=['number']).columns.tolist()
+            cat_cols = df.select_dtypes(exclude=['number']).columns.tolist()
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                chart_type = st.selectbox("Select Chart Type", ["Bar", "Histogram", "Pie", "Scatter", "Box", "Line"])
+            with col2:
+                x_axis = st.selectbox("X-Axis / Category", df.columns.tolist())
+            with col3:
+                y_axis = st.selectbox("Y-Axis / Value (if needed)", ["None"] + num_cols)
+            
+            c = {'type': chart_type.lower(), 'x': x_axis, 'y': y_axis if y_axis != "None" else x_axis}
+            
+            if st.button("Generate Custom Chart"):
+                generate_chart(df, c)
         
         st.markdown("## 🔗 Correlation Heatmap")
         corr = calculate_correlations(df)
