@@ -3,7 +3,7 @@ import streamlit as st
 import seaborn as sns
 
 def generate_chart(df, c):
- fig = plt.figure(figsize=(10, 5))
+    fig = plt.figure(figsize=(10, 5))
     try:
         if c['type'] == 'bar':
             df.groupby(c['x'])[c['y']].mean().sort_values(ascending=False).head(10).plot(kind='bar', color='#667eea')
@@ -37,7 +37,7 @@ def generate_chart(df, c):
         plt.close(fig)
 
 def plot_correlation_heatmap(corr_matrix):
- fig = plt.figure(figsize=(10, 8))
+    fig = plt.figure(figsize=(10, 8))
  sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, fmt='.2f')
  plt.title('Correlation Matrix Heatmap')
  plt.tight_layout()
