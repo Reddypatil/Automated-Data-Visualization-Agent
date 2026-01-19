@@ -8,124 +8,108 @@ from correlation_analysis import calculate_correlations, get_significant_correla
 from outlier_analysis import detailed_outliers
 from data_quality import quality_report
 from visualization_generator import generate_chart
+from ai_insights import generate_ai_insights
 
 def automated_dashboard(df: pd.DataFrame):
-    """Generate automated insights dashboard"""
+    """Generate a comprehensive automated insights dashboard for the whole dataset"""
     
-    st.markdown("## 🎯 Automated Insights Dashboard")
+    st.markdown("## 🧙‍♂️ Whole Dataset Intelligence Report")
     
-    # Key Metrics
-    st.markdown("### 📊 Key Metrics")
-    
-    col1, col2, col3, col4, col5 = st.columns(5)
-    
-    with col1:
-        st.metric("📈 Total Rows", len(df))
-    with col2:
-        st.metric("📌 Columns", len(df.columns))
-    with col3:
-        st.metric("📊 Numeric", len(df.select_dtypes(include=['number']).columns))
-    with col4:
-        st.metric("🔡 Categorical", len(df.select_dtypes(include=['object']).columns))
-    with col5:
-        st.metric("💾 Size (MB)", f"{df.memory_usage(deep=True).sum() / 1024**2:.2f}")
-    
-    st.divider()
-    
-    # Data Quality Summary
-    st.markdown("### 🔍 Data Quality Summary")
-    quality = quality_report(df)
-    missing_pct = (df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100
-    dup_pct = (df.duplicated().sum() / len(df)) * 100
+    # --- 1. Executive Summary ---
+    st.markdown("### 📋 Executive Summary")
+    with st.container():
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("📊 Dataset Vitality", f"{len(df)} rows")
+        with col2:
+            st.metric("🧬 Features", f"{len(df.columns)} columns")
+        with col3:
+            missing_pct = (df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100
+            st.metric("🩹 Data Health", f"{100 - missing_pct:.1f}% Score")
 
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("❌ Missing Data %", f"{missing_pct:.1f}%")
-    with col2:
-        st.metric("♻️ Duplicates %", f"{dup_pct:.1f}%")
-    with col3:
-        st.metric("💾 Memory (MB)", f"{quality['memory_usage_mb']:.2f}")
-    with col4:
-        st.metric("📊 Data Types", len(set(df.dtypes)))
-    
+    # --- 2. AI Strategic Insights ---
+    st.markdown("### 🤖 AI-Generated Strategic Insights")
+    if st.button("✨ Refresh AI Brain"):
+        with st.spinner("🔮 Syncing with AI..."):
+            eda = perform_eda(df)
+            anomalies = detect_anomalies(df)
+            corr = calculate_correlations(df)
+            significant = get_significant_correlations(df, 0.7) if corr is not None else []
+            insights = generate_ai_insights(df, eda, anomalies, significant)
+            st.success(insights)
+    else:
+        st.info("Click the button above to generate a deep-dive AI analysis of your entire dataset.")
+
     st.divider()
 
-    # Automated Visualizations
-    st.markdown("### 🎨 Automated Visualizations")
-    st.info("Visualizing key patterns detected in your data")
-    
+    # --- 3. Automated Visual Storytelling ---
+    st.markdown("### 🎨 Visual Storytelling")
     num_cols = df.select_dtypes(include=['number']).columns.tolist()
     cat_cols = df.select_dtypes(include=['object']).columns.tolist()
     
     v_col1, v_col2 = st.columns(2)
-    
     with v_col1:
-        # 1. Distribution of top numeric column
         if num_cols:
-            st.markdown(f"**Distribution of {num_cols[0]}**")
+            st.markdown(f"**Main Distribution: {num_cols[0]}**")
             generate_chart(df, {'type': 'hist', 'x': num_cols[0]})
-            
-        # 3. Box plot if both exist
         if cat_cols and num_cols:
-            st.markdown(f"**{num_cols[0]} by {cat_cols[0]}**")
+            st.markdown(f"**Grouped Variance: {num_cols[0]} by {cat_cols[0]}**")
             generate_chart(df, {'type': 'box', 'x': cat_cols[0], 'y': num_cols[0]})
-
     with v_col2:
-        # 2. Composition of top categorical column
         if cat_cols:
-            st.markdown(f"**Composition of {cat_cols[0]}**")
+            st.markdown(f"**Composition: {cat_cols[0]}**")
             generate_chart(df, {'type': 'pie', 'x': cat_cols[0]})
-            
-        # 4. Correlation Heatmap snippet or Scatter
         if len(num_cols) >= 2:
-            st.markdown(f"**{num_cols[1]} vs {num_cols[0]}**")
+            st.markdown(f"**Key Relationship: {num_cols[1]} vs {num_cols[0]}**")
             generate_chart(df, {'type': 'scatter', 'x': num_cols[0], 'y': num_cols[1]})
 
     st.divider()
+
+    # --- 4. Deep-Dive Metrics ---
+    st.markdown("### 🔍 Deep-Dive Statistics")
+    d_col1, d_col2 = st.columns(2)
     
-    # Anomalies
-    st.markdown("### 🔴 Anomalies Detected")
-    anomalies = detect_anomalies(df)
+    with d_col1:
+        st.markdown("**🔗 Top Relationships (Strongest Links)**")
+        corr = calculate_correlations(df)
+        if corr is not None:
+            significant = get_significant_correlations(df, threshold=0.7)
+            if significant:
+                for item in significant[:3]:
+                    st.success(f"**{item['var1']}** ↔ **{item['var2']}**: {item['correlation']:.3f}")
+            else:
+                st.write("No extreme correlations found.")
     
-    if any(anomalies.values()):
+    with d_col2:
+        st.markdown("**🔴 Data Red Flags (Anomalies & Outliers)**")
+        anomalies = detect_anomalies(df)
         anomaly_count = sum(1 for col, is_anomaly in anomalies.items() if is_anomaly)
-        st.error(f"⚠️ {anomaly_count} columns have anomalies")
-        for col, is_anomaly in anomalies.items():
-            if is_anomaly:
-                st.write(f"• {col}")
-    else:
-        st.success("✅ No anomalies detected")
-    
-    st.divider()
-    
-    # Top Correlations
-    st.markdown("### 🔗 Top Correlations")
-    corr = calculate_correlations(df)
-    
-    if corr is not None:
-        significant = get_significant_correlations(df, threshold=0.7)
-        if significant:
-            st.success(f"Found {len(significant)} strong correlations")
-            for item in significant[:5]:
-                st.info(f"**{item['var1']}** ↔ **{item['var2']}**: {item['correlation']:.3f}")
+        if anomaly_count > 0:
+            st.error(f"⚠️ {anomaly_count} potential data anomalies detected")
         else:
-            st.info("No strong correlations detected")
+            st.success("✅ Statistical distributions look normal")
+
+    # --- 5. Data Quality & Readiness ---
+    st.markdown("### 🧪 Data Quality & Readiness")
+    quality = quality_report(df)
+    dup_pct = (df.duplicated().sum() / len(df)) * 100
     
-    st.divider()
-    
-    # Recommendations
-    st.markdown("### 💡 Recommendations")
+    col_q1, col_q2, col_q3 = st.columns(3)
+    col_q1.metric("♻️ Duplicates", f"{dup_pct:.1f}%")
+    col_q2.metric("💾 Footprint", f"{quality['memory_usage_mb']:.2f} MB")
+    col_q3.metric("📈 Ready for ML", "Yes" if missing_pct < 20 else "Partial")
+
+    # --- 6. Automated Roadmap ---
+    st.markdown("### 💡 Recommended Roadmap")
     recommendations = []
-    
     if missing_pct > 10:
-        recommendations.append("⚠️ High missing data percentage - consider imputation or deletion")
+        recommendations.append("🛠️ **Data Imputation**: High missing values detected. Consider filling gaps before analysis.")
     if dup_pct > 5:
-        recommendations.append("⚠️ High duplication rate - check for data quality issues")
-    if len(detailed_outliers(df)) > 0:
-        recommendations.append("📍 Remove or handle outliers before modeling")
+        recommendations.append("🧹 **Deduplication**: Clean duplicate records to avoid biased results.")
+    if anomaly_count > 0:
+        recommendations.append("🚩 **Manual Review**: Examine red-flagged columns for sensor errors or fraud.")
+    if not recommendations:
+        recommendations.append("🚀 **Full Steam Ahead**: Data is pristine. Ready for advanced predictive modeling.")
     
-    if recommendations:
-        for rec in recommendations:
-            st.info(rec)
-    else:
-        st.success("✅ Dataset looks good for analysis!")
+    for rec in recommendations:
+        st.info(rec)
