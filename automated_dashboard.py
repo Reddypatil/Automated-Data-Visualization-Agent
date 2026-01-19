@@ -7,6 +7,7 @@ from anomaly_detection import detect_anomalies
 from correlation_analysis import calculate_correlations, get_significant_correlations
 from outlier_analysis import detailed_outliers
 from data_quality import quality_report
+from visualization_generator import generate_chart
 
 def automated_dashboard(df: pd.DataFrame):
     """Generate automated insights dashboard"""
@@ -34,19 +35,52 @@ def automated_dashboard(df: pd.DataFrame):
     # Data Quality Summary
     st.markdown("### 🔍 Data Quality Summary")
     quality = quality_report(df)
-    
+    missing_pct = (df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100
+    dup_pct = (df.duplicated().sum() / len(df)) * 100
+
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        missing_pct = (df.isnull().sum().sum() / (len(df) * len(df.columns))) * 100
         st.metric("❌ Missing Data %", f"{missing_pct:.1f}%")
     with col2:
-        dup_pct = (df.duplicated().sum() / len(df)) * 100
         st.metric("♻️ Duplicates %", f"{dup_pct:.1f}%")
     with col3:
         st.metric("💾 Memory (MB)", f"{quality['memory_usage_mb']:.2f}")
     with col4:
         st.metric("📊 Data Types", len(set(df.dtypes)))
     
+    st.divider()
+
+    # Automated Visualizations
+    st.markdown("### 🎨 Automated Visualizations")
+    st.info("Visualizing key patterns detected in your data")
+    
+    num_cols = df.select_dtypes(include=['number']).columns.tolist()
+    cat_cols = df.select_dtypes(include=['object']).columns.tolist()
+    
+    v_col1, v_col2 = st.columns(2)
+    
+    with v_col1:
+        # 1. Distribution of top numeric column
+        if num_cols:
+            st.markdown(f"**Distribution of {num_cols[0]}**")
+            generate_chart(df, {'type': 'hist', 'x': num_cols[0]})
+            
+        # 3. Box plot if both exist
+        if cat_cols and num_cols:
+            st.markdown(f"**{num_cols[0]} by {cat_cols[0]}**")
+            generate_chart(df, {'type': 'box', 'x': cat_cols[0], 'y': num_cols[0]})
+
+    with v_col2:
+        # 2. Composition of top categorical column
+        if cat_cols:
+            st.markdown(f"**Composition of {cat_cols[0]}**")
+            generate_chart(df, {'type': 'pie', 'x': cat_cols[0]})
+            
+        # 4. Correlation Heatmap snippet or Scatter
+        if len(num_cols) >= 2:
+            st.markdown(f"**{num_cols[1]} vs {num_cols[0]}**")
+            generate_chart(df, {'type': 'scatter', 'x': num_cols[0], 'y': num_cols[1]})
+
     st.divider()
     
     # Anomalies
@@ -79,54 +113,16 @@ def automated_dashboard(df: pd.DataFrame):
     
     st.divider()
     
-    # Distribution Overview
-    st.markdown("### 📊 Distribution Overview")
-    
-    numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-    if numeric_cols:
-        fig, axes = plt.subplots(1, min(3, len(numeric_cols)), figsize=(15, 4))
-        if len(numeric_cols) == 1:
-            axes = [axes]
-        
-        for idx, col in enumerate(numeric_cols[:3]):
-            axes[idx].hist(df[col].dropna(), bins=30, color='#667eea', edgecolor='black', alpha=0.7)
-            axes[idx].set_title(f"{col} Distribution")
-            axes[idx].set_xlabel(col)
-            axes[idx].set_ylabel("Frequency")
-        
-        plt.tight_layout()
-        st.pyplot(fig)
-    
-    st.divider()
-    
-    # Outlier Summary
-    st.markdown("### 📍 Outlier Summary")
-    outliers = detailed_outliers(df)
-    
-    if outliers:
-        total_outliers = sum(info['count'] for info in outliers.values())
-        st.warning(f"Found {total_outliers} outliers across {len(outliers)} columns")
-        
-        for col, info in list(outliers.items())[:3]:
-            st.write(f"• **{col}**: {info['count']} outliers ({info['percentage']}%)")
-    else:
-        st.success("✅ No outliers detected")
-    
-    st.divider()
-    
     # Recommendations
     st.markdown("### 💡 Recommendations")
-    
     recommendations = []
     
     if missing_pct > 10:
         recommendations.append("⚠️ High missing data percentage - consider imputation or deletion")
     if dup_pct > 5:
         recommendations.append("⚠️ High duplication rate - check for data quality issues")
-    if outliers:
+    if len(detailed_outliers(df)) > 0:
         recommendations.append("📍 Remove or handle outliers before modeling")
-    if len(numeric_cols) > 50:
-        recommendations.append("📉 High dimensionality - consider feature selection")
     
     if recommendations:
         for rec in recommendations:
