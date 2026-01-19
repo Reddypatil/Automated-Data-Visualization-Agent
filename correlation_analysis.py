@@ -27,21 +27,25 @@ def get_significant_correlations(df, threshold=0.7):
  return significant
 
 def statistical_tests(df):
- num_cols = df.select_dtypes(include='number').columns
- results = []
- for i in range(len(num_cols)):
-  for j in range(i+1, len(num_cols)):
-   col1, col2 = num_cols[i], num_cols[j]
-   # Pearson
-   pearson_r, pearson_p = pearsonr(df[col1].dropna(), df[col2].dropna())
-   # Spearman
-   spearman_r, spearman_p = spearmanr(df[col1].dropna(), df[col2].dropna())
-   results.append({
-    'variables': f'{col1} vs {col2}',
-    'pearson_r': round(pearson_r, 3),
-    'pearson_p': round(pearson_p, 4),
-    'spearman_r': round(spearman_r, 3),
-    'spearman_p': round(spearman_p, 4),
-    'significant': 'Yes' if min(pearson_p, spearman_p) < 0.05 else 'No'
-   })
- return results
+    num_cols = df.select_dtypes(include='number').columns
+    results = []
+    for i in range(len(num_cols)):
+        for j in range(i+1, len(num_cols)):
+            col1, col2 = num_cols[i], num_cols[j]
+            # Use only rows that have non-null values in both columns
+            valid_df = df[[col1, col2]].dropna()
+            
+            if len(valid_df) > 1:
+                # Pearson
+                pearson_r, pearson_p = pearsonr(valid_df[col1], valid_df[col2])
+                # Spearman
+                spearman_r, spearman_p = spearmanr(valid_df[col1], valid_df[col2])
+                results.append({
+                    'variables': f'{col1} vs {col2}',
+                    'pearson_r': round(pearson_r, 3),
+                    'pearson_p': round(pearson_p, 4),
+                    'spearman_r': round(spearman_r, 3),
+                    'spearman_p': round(spearman_p, 4),
+                    'significant': 'Yes' if min(pearson_p, spearman_p) < 0.05 else 'No'
+                })
+    return results
