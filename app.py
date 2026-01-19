@@ -30,7 +30,7 @@ from dark_mode import toggle_dark_mode
 from collaborative_features import collaborative_features_ui
 
 st.set_page_config(
-    page_title="DataWizard Pro - Advanced Analytics",
+    page_title="Automated Data Visualization Agent",
     page_icon="🧙‍♂️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -47,17 +47,6 @@ st.markdown("""
         margin-bottom: 30px;
     }
     .header-title h1 { font-size: 3em; font-weight: 800; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-    .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white; border: none; border-radius: 8px; padding: 12px 30px;
-        font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-    .stButton > button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6); }
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; background-color: rgba(255, 255, 255, 0.9);
-        padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
-    .stTabs [aria-selected="true"] { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-    .stMetric { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        border-left: 4px solid #667eea; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -68,7 +57,7 @@ with st.sidebar:
 # Header
 st.markdown("""
 <div class="header-title">
-    <h1>🧙‍♂️ DataWizard Pro</h1>
+    <h1>🧙‍♂️ Automated Data Visualization Agent</h1>
     <p>Complete AI-Powered Analytics & Intelligence Platform</p>
 </div>
 """, unsafe_allow_html=True)

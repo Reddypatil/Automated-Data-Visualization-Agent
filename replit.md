@@ -1,8 +1,8 @@
-# DataWizard Pro - Complete Advanced Analytics Platform
+# Automated Data Visualization Agent - Complete Advanced Analytics Platform
 
 ## Overview
 
-DataWizard Pro is a comprehensive, enterprise-grade Streamlit-based web application providing automated data analysis, visualization, and predictive modeling with AI-powered insights. Full feature suite includes EDA, quality reporting, advanced clustering, hypothesis testing, feature engineering, model explainability, NLP queries, and collaborative analysis.
+Automated Data Visualization Agent is a comprehensive, enterprise-grade Streamlit-based web application providing automated data analysis, visualization, and predictive modeling with AI-powered insights. Full feature suite includes EDA, quality reporting, advanced clustering, hypothesis testing, feature engineering, model explainability, NLP queries, and collaborative analysis.
 
 ## ✅ ALL FEATURES COMPLETED
 
