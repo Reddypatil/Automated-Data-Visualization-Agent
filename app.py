@@ -70,6 +70,24 @@ st.markdown("""
         border: 1px solid rgba(255, 255, 255, 0.2);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label {
+        background-color: rgba(102, 126, 234, 0.15);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+        padding: 8px 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover {
+        background-color: rgba(102, 126, 234, 0.25);
+        border-color: #667eea;
+        transform: translateX(5px);
+    }
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] [data-testid="stWidgetLabel"] {
+        color: white !important;
+        font-weight: 600;
+    }
 </style>
 """, unsafe_allow_html=True)
 
