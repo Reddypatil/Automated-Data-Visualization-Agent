@@ -74,30 +74,24 @@ st.markdown("""
 # Sidebar
 with st.sidebar:
     st.title("🎯 Navigation")
+    nav_option = st.radio(
+        "Select Module:",
+        [
+            "📊 EDA", "🔍 Quality", "🎨 Visualizations", "📈 Advanced Analytics",
+            "🤖 AI Insights", "⚡ Predictions", "🔄 Clustering", "📍 Explainability",
+            "🔧 Transformation", "🧪 Hypothesis Testing", "🔧 Feature Engineering", "📊 Sampling",
+            "💬 NLP Queries", "🔄 Compare Datasets", "👥 Collaboration", "📥 Export/PDF",
+            "⭐ Automated Dashboard"
+        ]
+    )
+    
+    st.divider()
     st.markdown("""
-    **Core Analytics:**
-    - 📊 EDA
-    - 🔍 Quality
-    - 🎨 Visualizations
-    - 📈 Advanced Analytics
-    
-    **AI & ML:**
-    - 🤖 AI Insights
-    - ⚡ Predictions
-    - 🎯 Clustering
-    - 🔍 Explainability
-    
-    **Data Tools:**
-    - 🔧 Transformation
-    - 🧪 Hypothesis Testing
-    - 🔧 Feature Engineering
-    - 📊 Sampling
-    
-    **Advanced:**
-    - 💬 NLP Queries
-    - 🔄 Compare Datasets
-    - 👥 Collaboration
-    - 📥 Export/PDF
+    **Modules Overview:**
+    - **Core:** EDA, Quality, Viz, Analytics
+    - **AI/ML:** Insights, Models, Clustering, Explainability
+    - **Tools:** Transform, Testing, Features, Sampling
+    - **System:** NLP, Compare, Collab, Export
     """)
 
 # File upload
@@ -121,16 +115,8 @@ if uploaded_file:
     
     st.divider()
     
-    # Main tabs
-    tabs = st.tabs([
-        "📊 EDA", "🔍 Quality", "🎨 Visualizations", "📈 Analytics",
-        "🤖 AI Insights", "⚡ Predictions", "🔄 Clustering", "🧪 Testing",
-        "🔧 Transform", "🔧 Features", "📍 Explainability", "💬 NLP",
-        "🔄 Compare", "📊 Sampling", "⭐ Dashboard", "👥 Collab", "📥 Export"
-    ])
-    
-    # Tab 1: EDA
-    with tabs[0]:
+    # Map navigation to content
+    if nav_option == "📊 EDA":
         st.markdown("## 📊 Exploratory Data Analysis")
         col1, col2, col3 = st.columns(3)
         eda = perform_eda(df)
@@ -145,9 +131,8 @@ if uploaded_file:
         st.markdown("### Data Profiling")
         profile = profile_data(df)
         st.json(profile)
-    
-    # Tab 2: Quality
-    with tabs[1]:
+
+    elif nav_option == "🔍 Quality":
         st.markdown("## 🔍 Data Quality Report")
         quality = quality_report(df)
         st.info(data_quality_summary(df))
@@ -165,9 +150,8 @@ if uploaded_file:
             for col_name, col_info in quality['columns'].items()
         ])
         st.dataframe(quality_df, use_container_width=True)
-    
-    # Tab 3: Visualizations
-    with tabs[2]:
+
+    elif nav_option == "🎨 Visualizations":
         viz_choice = st.radio("Visualization Mode", ["🤖 AI Recommended", "🔍 All Charts"], horizontal=True)
         
         if viz_choice == "🤖 AI Recommended":
@@ -182,7 +166,6 @@ if uploaded_file:
             st.markdown("## 🔍 Explore All Visualizations")
             
             num_cols = df.select_dtypes(include=['number']).columns.tolist()
-            cat_cols = df.select_dtypes(exclude=['number']).columns.tolist()
             
             col1, col2, col3 = st.columns(3)
             with col1:
@@ -206,9 +189,8 @@ if uploaded_file:
                 st.success("**Strong Correlations:**")
                 for item in significant:
                     st.markdown(f"• **{item['var1']}** ↔ **{item['var2']}**: {item['correlation']}")
-    
-    # Tab 4: Advanced Analytics
-    with tabs[3]:
+
+    elif nav_option == "📈 Advanced Analytics":
         st.markdown("## 📊 Statistical Analysis")
         
         st.markdown("### 🔴 Anomaly Detection")
@@ -257,9 +239,8 @@ if uploaded_file:
                     with col4:
                         st.metric("📉 Trend", analysis['trend'])
                     plot_time_series(df_ts, date_col, value_col)
-    
-    # Tab 5: AI Insights
-    with tabs[4]:
+
+    elif nav_option == "🤖 AI Insights":
         st.markdown("## 🤖 AI-Powered Insights")
         if st.button("✨ Generate AI Insights"):
             with st.spinner("🔮 Analyzing..."):
@@ -269,9 +250,8 @@ if uploaded_file:
                 significant = get_significant_correlations(df, 0.7) if corr is not None else []
                 insights = generate_ai_insights(df, eda, anomalies, significant)
                 st.success(insights)
-    
-    # Tab 6: Predictions
-    with tabs[5]:
+
+    elif nav_option == "⚡ Predictions":
         st.markdown("## ⚡ Predictive Analytics")
         num_cols = df.select_dtypes(include='number').columns.tolist()
         if len(num_cols) >= 2:
@@ -283,52 +263,41 @@ if uploaded_file:
                     if result:
                         st.success("✅ Model trained!")
                         st.json(result)
-    
-    # Tab 7: Clustering
-    with tabs[6]:
+
+    elif nav_option == "🔄 Clustering":
         df = clustering_ui(df)
-    
-    # Tab 8: Hypothesis Testing
-    with tabs[7]:
-        hypothesis_testing_ui(df)
-    
-    # Tab 9: Data Transformation
-    with tabs[8]:
-        df = data_transformation_ui(df)
-    
-    # Tab 10: Feature Engineering
-    with tabs[9]:
-        df = feature_engineering_ui(df)
-    
-    # Tab 11: Model Explainability
-    with tabs[10]:
+
+    elif nav_option == "📍 Explainability":
         model_explainability_ui(df)
-    
-    # Tab 12: NLP Queries
-    with tabs[11]:
-        nlp_query_ui(df)
-    
-    # Tab 13: Compare Datasets
-    with tabs[12]:
-        comparative_analysis_ui()
-    
-    # Tab 14: Data Sampling
-    with tabs[13]:
+
+    elif nav_option == "🔧 Transformation":
+        df = data_transformation_ui(df)
+
+    elif nav_option == "🧪 Hypothesis Testing":
+        hypothesis_testing_ui(df)
+
+    elif nav_option == "🔧 Feature Engineering":
+        df = feature_engineering_ui(df)
+
+    elif nav_option == "📊 Sampling":
         df = data_sampling_ui(df)
-    
-    # Tab 15: Automated Dashboard
-    with tabs[14]:
-        automated_dashboard(df)
-    
-    # Tab 16: Collaboration
-    with tabs[15]:
+
+    elif nav_option == "💬 NLP Queries":
+        nlp_query_ui(df)
+
+    elif nav_option == "🔄 Compare Datasets":
+        comparative_analysis_ui()
+
+    elif nav_option == "👥 Collaboration":
         collaborative_features_ui(df)
-    
-    # Tab 17: Export
-    with tabs[16]:
+
+    elif nav_option == "📥 Export/PDF":
         export_functionality_ui(df)
         st.divider()
         pdf_report_ui(df)
+
+    elif nav_option == "⭐ Automated Dashboard":
+        automated_dashboard(df)
 
 else:
     st.markdown("""
