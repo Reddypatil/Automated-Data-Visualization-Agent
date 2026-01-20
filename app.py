@@ -41,7 +41,7 @@ st.markdown("""
 <style>
     .main { background: #667eea; }
     .header-title {
-        background: #667eea;
+        background: red;
         color: white; padding: 40px 20px; border-radius: 15px;
         text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
         margin-bottom: 30px;
