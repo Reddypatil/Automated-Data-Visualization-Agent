@@ -56,6 +56,20 @@ st.markdown("""
         border-radius: 10px;
         display: inline-block;
     }
+    /* Style for the sidebar navigation box */
+    [data-testid="stSidebarNav"] {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    [data-testid="stSidebar"] .stRadio {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 </style>
 """, unsafe_allow_html=True)
 
