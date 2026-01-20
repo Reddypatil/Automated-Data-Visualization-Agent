@@ -116,6 +116,8 @@ if uploaded_file:
     st.divider()
     
     # Map navigation to content
+    st.markdown(f'<div id="{nav_option.split()[-1].lower()}"></div>', unsafe_allow_html=True)
+    
     if nav_option == "📊 EDA":
         st.markdown("## 📊 Exploratory Data Analysis")
         col1, col2, col3 = st.columns(3)
