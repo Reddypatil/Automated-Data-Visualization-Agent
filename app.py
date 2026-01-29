@@ -35,21 +35,30 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Apply theme
+# Force Dark Mode and apply theme
 st.markdown("""
 <style>
-    .main { background: #667eea; }
+    /* Force dark theme colors */
+    :root {
+        --primary-color: #ff4b4b;
+        --background-color: #0e1117;
+        --secondary-background-color: #262730;
+        --text-color: #fafafa;
+        --font: sans-serif;
+    }
+    .main { background: #0e1117; color: #fafafa; }
     .header-title {
-        background: red;
+        background: #1e1e1e;
         color: white; padding: 40px 20px; border-radius: 15px;
-        text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         margin-bottom: 30px;
+        border: 1px solid #333;
     }
     .header-title h1 { 
         font-size: 3em; 
         font-weight: 800; 
         margin: 0; 
-        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         background: #ff4b4b;
         padding: 10px 20px;
         border-radius: 10px;
@@ -62,16 +71,19 @@ st.markdown("""
         padding: 10px;
         margin-bottom: 20px;
     }
+    [data-testid="stSidebar"] {
+        background-color: #262730;
+    }
     [data-testid="stSidebar"] .stRadio {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.05);
         padding: 20px;
         border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
     [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label {
-        background-color: rgba(102, 126, 234, 0.15);
-        border: 1px solid rgba(102, 126, 234, 0.3);
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         padding: 8px 12px;
         border-radius: 8px;
         margin-bottom: 8px;
@@ -79,20 +91,24 @@ st.markdown("""
         cursor: pointer;
     }
     [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover {
-        background-color: rgba(102, 126, 234, 0.25);
-        border-color: #667eea;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: #ff4b4b;
         transform: translateX(5px);
     }
     [data-testid="stSidebar"] .stRadio div[role="radiogroup"] [data-testid="stWidgetLabel"] {
-        color: white !important;
+        color: #fafafa !important;
         font-weight: 600;
+    }
+    /* Metric styling for dark mode */
+    [data-testid="stMetricValue"] {
+        color: #ff4b4b !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Toggle dark mode
-with st.sidebar:
-    toggle_dark_mode()
+# Toggle dark mode - Removed to keep always in dark mode
+# with st.sidebar:
+#    toggle_dark_mode()
 
 # Header
 st.markdown("""
