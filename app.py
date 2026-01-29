@@ -31,7 +31,6 @@ from collaborative_features import collaborative_features_ui
 
 st.set_page_config(
     page_title="Automated Data Visualization Agent",
-    page_icon="🧙‍♂️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -98,7 +97,7 @@ with st.sidebar:
 # Header
 st.markdown("""
 <div class="header-title">
-    <h1>🧙‍♂️ Automated Data Visualization Agent</h1>
+    <h1>Automated Data Visualization Agent</h1>
     <p>Complete AI-Powered Analytics & Intelligence Platform</p>
 </div>
 """, unsafe_allow_html=True)
@@ -109,11 +108,11 @@ with st.sidebar:
     nav_option = st.radio(
         "Select Module:",
         [
-            "📊 EDA", "🔍 Quality", "🎨 Visualizations", "📈 Advanced Analytics",
-            "🤖 AI Insights", "⚡ Predictions", "🔄 Clustering", "📍 Explainability",
-            "🔧 Transformation", "🧪 Hypothesis Testing", "🔧 Feature Engineering", "📊 Sampling",
-            "💬 NLP Queries", "🔄 Compare Datasets", "👥 Collaboration", "📥 Export/PDF",
-            "⭐ Automated Dashboard"
+            "EDA", "Quality", "Visualizations", "Advanced Analytics",
+            "AI Insights", "Predictions", "Clustering", "Explainability",
+            "Transformation", "Hypothesis Testing", "Feature Engineering", "Sampling",
+            "NLP Queries", "Compare Datasets", "Collaboration", "Export/PDF",
+            "Automated Dashboard"
         ]
     )
     
@@ -148,10 +147,10 @@ if uploaded_file:
     st.divider()
     
     # Map navigation to content
-    st.markdown(f'<div id="{nav_option.split()[-1].lower()}"></div>', unsafe_allow_html=True)
+    st.markdown(f'<div id="{nav_option.lower()}"></div>', unsafe_allow_html=True)
     
-    if nav_option == "📊 EDA":
-        st.markdown("## 📊 Exploratory Data Analysis")
+    if nav_option == "EDA":
+        st.markdown("## Exploratory Data Analysis")
         col1, col2, col3 = st.columns(3)
         eda = perform_eda(df)
         with col1:
@@ -166,18 +165,18 @@ if uploaded_file:
         profile = profile_data(df)
         st.json(profile)
 
-    elif nav_option == "🔍 Quality":
-        st.markdown("## 🔍 Data Quality Report")
+    elif nav_option == "Quality":
+        st.markdown("## Data Quality Report")
         quality = quality_report(df)
         st.info(data_quality_summary(df))
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("⚠️ Missing", sum([col['missing_count'] for col in quality['columns'].values()]))
+            st.metric("Missing", sum([col['missing_count'] for col in quality['columns'].values()]))
         with col2:
-            st.metric("♻️ Duplicates", quality['duplicates']['count'])
+            st.metric("Duplicates", quality['duplicates']['count'])
         with col3:
-            st.metric("💾 Memory (MB)", quality['memory_usage_mb'])
+            st.metric("Memory (MB)", quality['memory_usage_mb'])
         
         quality_df = pd.DataFrame([
             {'Column': col_name, 'Type': col_info['dtype'], 'Missing %': col_info['missing_percentage'], 'Unique': col_info['unique_values']}
@@ -185,19 +184,19 @@ if uploaded_file:
         ])
         st.dataframe(quality_df, use_container_width=True)
 
-    elif nav_option == "🎨 Visualizations":
-        viz_choice = st.radio("Visualization Mode", ["🤖 AI Recommended", "🔍 All Charts"], horizontal=True)
+    elif nav_option == "Visualizations":
+        viz_choice = st.radio("Visualization Mode", ["AI Recommended", "All Charts"], horizontal=True)
         
-        if viz_choice == "🤖 AI Recommended":
-            st.markdown("## 🎨 AI-Selected Visualizations")
-            st.info("🤖 AI-chosen visualizations for your data")
+        if viz_choice == "AI Recommended":
+            st.markdown("## AI-Selected Visualizations")
+            st.info("AI-chosen visualizations for your data")
             
             for chart in ai_chart_selection(df):
                 st.info(chart["reason"])
                 generate_chart(df, chart)
                 st.divider()
         else:
-            st.markdown("## 🔍 Explore All Visualizations")
+            st.markdown("## Explore All Visualizations")
             
             num_cols = df.select_dtypes(include=['number']).columns.tolist()
             
@@ -214,7 +213,7 @@ if uploaded_file:
             if st.button("Generate Custom Chart"):
                 generate_chart(df, c)
         
-        st.markdown("## 🔗 Correlation Heatmap")
+        st.markdown("## Correlation Heatmap")
         corr = calculate_correlations(df)
         if corr is not None:
             plot_correlation_heatmap(corr)
@@ -224,17 +223,17 @@ if uploaded_file:
                 for item in significant:
                     st.markdown(f"• **{item['var1']}** ↔ **{item['var2']}**: {item['correlation']}")
 
-    elif nav_option == "📈 Advanced Analytics":
-        st.markdown("## 📊 Statistical Analysis")
+    elif nav_option == "Advanced Analytics":
+        st.markdown("## Statistical Analysis")
         
-        st.markdown("### 🔴 Anomaly Detection")
+        st.markdown("### Anomaly Detection")
         anomalies = detect_anomalies(df)
         if any(anomalies.values()):
             st.json(anomalies)
         else:
-            st.success("✅ No anomalies detected!")
+            st.success("No anomalies detected!")
         
-        st.markdown("### 📍 Outlier Analysis")
+        st.markdown("### Outlier Analysis")
         outliers = detailed_outliers(df)
         if outliers:
             for col, info in outliers.items():
@@ -247,14 +246,14 @@ if uploaded_file:
                     with col3:
                         st.metric("Threshold", info['threshold'])
         else:
-            st.success("✅ No outliers detected!")
+            st.success("No outliers detected!")
         
-        st.markdown("### 🧪 Statistical Tests")
+        st.markdown("### Statistical Tests")
         tests = statistical_tests(df)
         if tests:
             st.dataframe(pd.DataFrame(tests), use_container_width=True)
         
-        st.markdown("### ⏰ Time Series Analysis")
+        st.markdown("### Time Series Analysis")
         datetime_cols = detect_datetime_columns(df)
         if datetime_cols:
             date_col = st.selectbox("Date Column", datetime_cols)
@@ -265,19 +264,19 @@ if uploaded_file:
                 if analysis:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
-                        st.metric("📅 Date Range", analysis['date_range'])
+                        st.metric("Date Range", analysis['date_range'])
                     with col2:
-                        st.metric("📊 Days", analysis['total_days'])
+                        st.metric("Days", analysis['total_days'])
                     with col3:
-                        st.metric("📈 Mean", analysis['value_mean'])
+                        st.metric("Mean", analysis['value_mean'])
                     with col4:
-                        st.metric("📉 Trend", analysis['trend'])
+                        st.metric("Trend", analysis['trend'])
                     plot_time_series(df_ts, date_col, value_col)
 
-    elif nav_option == "🤖 AI Insights":
-        st.markdown("## 🤖 AI-Powered Insights")
-        if st.button("✨ Generate AI Insights"):
-            with st.spinner("🔮 Analyzing..."):
+    elif nav_option == "AI Insights":
+        st.markdown("## AI-Powered Insights")
+        if st.button("Generate AI Insights"):
+            with st.spinner("Analyzing..."):
                 eda = perform_eda(df)
                 anomalies = detect_anomalies(df)
                 corr = calculate_correlations(df)
@@ -285,52 +284,52 @@ if uploaded_file:
                 insights = generate_ai_insights(df, eda, anomalies, significant)
                 st.success(insights)
 
-    elif nav_option == "⚡ Predictions":
-        st.markdown("## ⚡ Predictive Analytics")
+    elif nav_option == "Predictions":
+        st.markdown("## Predictive Analytics")
         num_cols = df.select_dtypes(include='number').columns.tolist()
         if len(num_cols) >= 2:
             target = st.selectbox("Target Column", num_cols)
-            model_type = st.radio("Model Type", ["📊 Regression", "📈 Classification"], horizontal=True)
-            if st.button("🚀 Train Model"):
+            model_type = st.radio("Model Type", ["Regression", "Classification"], horizontal=True)
+            if st.button("Train Model"):
                 with st.spinner("Training..."):
                     result = simple_regression(df, target) if "Regression" in model_type else classification_model(df, target)
                     if result:
-                        st.success("✅ Model trained!")
+                        st.success("Model trained!")
                         st.json(result)
 
-    elif nav_option == "🔄 Clustering":
+    elif nav_option == "Clustering":
         df = clustering_ui(df)
 
-    elif nav_option == "📍 Explainability":
+    elif nav_option == "Explainability":
         model_explainability_ui(df)
 
-    elif nav_option == "🔧 Transformation":
+    elif nav_option == "Transformation":
         df = data_transformation_ui(df)
 
-    elif nav_option == "🧪 Hypothesis Testing":
+    elif nav_option == "Hypothesis Testing":
         hypothesis_testing_ui(df)
 
-    elif nav_option == "🔧 Feature Engineering":
+    elif nav_option == "Feature Engineering":
         df = feature_engineering_ui(df)
 
-    elif nav_option == "📊 Sampling":
+    elif nav_option == "Sampling":
         df = data_sampling_ui(df)
 
-    elif nav_option == "💬 NLP Queries":
+    elif nav_option == "NLP Queries":
         nlp_query_ui(df)
 
-    elif nav_option == "🔄 Compare Datasets":
+    elif nav_option == "Compare Datasets":
         comparative_analysis_ui()
 
-    elif nav_option == "👥 Collaboration":
+    elif nav_option == "Collaboration":
         collaborative_features_ui(df)
 
-    elif nav_option == "📥 Export/PDF":
+    elif nav_option == "Export/PDF":
         export_functionality_ui(df)
         st.divider()
         pdf_report_ui(df)
 
-    elif nav_option == "⭐ Automated Dashboard":
+    elif nav_option == "Automated Dashboard":
         automated_dashboard(df)
 
 else:
