@@ -29,11 +29,11 @@ from automated_dashboard import automated_dashboard
 from dark_mode import toggle_dark_mode
 from collaborative_features import collaborative_features_ui
 
-st.set_page_config(
-    page_title="Automated Data Visualization Agent",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+from feature_selection import feature_selection_ui
+
+st.set_page_config(page_title="Automated Data Visualization Agent",
+                   layout="wide",
+                   initial_sidebar_state="expanded")
 
 # Force Dark Mode and apply theme
 st.markdown("""
@@ -104,7 +104,8 @@ st.markdown("""
         color: #ff4b4b !important;
     }
 </style>
-""", unsafe_allow_html=True)
+""",
+            unsafe_allow_html=True)
 
 # Toggle dark mode - Removed to keep always in dark mode
 # with st.sidebar:
@@ -116,22 +117,20 @@ st.markdown("""
     <h1>Automated Data Visualization Agent</h1>
     <p>Complete AI-Powered Analytics & Intelligence Platform</p>
 </div>
-""", unsafe_allow_html=True)
+""",
+            unsafe_allow_html=True)
 
 # Sidebar
 with st.sidebar:
     st.title("🎯 Navigation")
-    nav_option = st.radio(
-        "Select Module:",
-        [
-            "EDA", "Quality", "Visualizations", "Advanced Analytics",
-            "AI Insights", "Predictions", "Clustering", "Explainability",
-            "Transformation", "Hypothesis Testing", "Feature Engineering", "Sampling",
-            "NLP Queries", "Compare Datasets", "Collaboration", "Export/PDF",
-            "Automated Dashboard"
-        ]
-    )
-    
+    nav_option = st.radio("Select Module:", [
+        "EDA", "Quality", "Visualizations", "Advanced Analytics",
+        "AI Insights", "Predictions", "Clustering", "Explainability",
+        "Transformation", "Hypothesis Testing", "Feature Engineering", "Feature Selection",
+        "Sampling", "NLP Queries", "Compare Datasets", "Collaboration",
+        "Export/PDF", "Automated Dashboard"
+    ])
+
     st.divider()
     st.markdown("""
     **Modules Overview:**
@@ -143,12 +142,13 @@ with st.sidebar:
 
 # File upload
 st.markdown("### 📁 Upload Your Data")
-uploaded_file = st.file_uploader("Select CSV, Excel, or JSON", type=["csv", "xlsx", "json"])
+uploaded_file = st.file_uploader("Select CSV, Excel, or JSON",
+                                 type=["csv", "xlsx", "json"])
 
 if uploaded_file:
     df = preprocess_data(load_data(uploaded_file))
     st.success(f"✅ Loaded: {len(df)} rows × {len(df.columns)} columns")
-    
+
     # Quick preview
     with st.expander("📋 Data Preview", expanded=True):
         col1, col2, col3 = st.columns(3)
@@ -157,14 +157,16 @@ if uploaded_file:
         with col2:
             st.metric("📌 Columns", len(df.columns))
         with col3:
-            st.metric("🔢 Numeric", len(df.select_dtypes(include='number').columns))
+            st.metric("🔢 Numeric",
+                      len(df.select_dtypes(include='number').columns))
         st.dataframe(df.head(10), use_container_width=True)
-    
+
     st.divider()
-    
+
     # Map navigation to content
-    st.markdown(f'<div id="{nav_option.lower()}"></div>', unsafe_allow_html=True)
-    
+    st.markdown(f'<div id="{nav_option.lower()}"></div>',
+                unsafe_allow_html=True)
+
     if nav_option == "EDA":
         st.markdown("## Exploratory Data Analysis")
         col1, col2, col3 = st.columns(3)
@@ -174,9 +176,10 @@ if uploaded_file:
         with col2:
             st.metric("Total Columns", eda['cols'])
         with col3:
-            st.metric("Numeric Cols", len(df.select_dtypes(include='number').columns))
+            st.metric("Numeric Cols",
+                      len(df.select_dtypes(include='number').columns))
         st.json(eda)
-        
+
         st.markdown("### Data Profiling")
         profile = profile_data(df)
         st.json(profile)
@@ -185,50 +188,66 @@ if uploaded_file:
         st.markdown("## Data Quality Report")
         quality = quality_report(df)
         st.info(data_quality_summary(df))
-        
+
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Missing", sum([col['missing_count'] for col in quality['columns'].values()]))
+            st.metric(
+                "Missing",
+                sum([
+                    col['missing_count']
+                    for col in quality['columns'].values()
+                ]))
         with col2:
             st.metric("Duplicates", quality['duplicates']['count'])
         with col3:
             st.metric("Memory (MB)", quality['memory_usage_mb'])
-        
-        quality_df = pd.DataFrame([
-            {'Column': col_name, 'Type': col_info['dtype'], 'Missing %': col_info['missing_percentage'], 'Unique': col_info['unique_values']}
-            for col_name, col_info in quality['columns'].items()
-        ])
+
+        quality_df = pd.DataFrame([{
+            'Column': col_name,
+            'Type': col_info['dtype'],
+            'Missing %': col_info['missing_percentage'],
+            'Unique': col_info['unique_values']
+        } for col_name, col_info in quality['columns'].items()])
         st.dataframe(quality_df, use_container_width=True)
 
     elif nav_option == "Visualizations":
-        viz_choice = st.radio("Visualization Mode", ["AI Recommended", "All Charts"], horizontal=True)
-        
+        viz_choice = st.radio("Visualization Mode",
+                              ["AI Recommended", "All Charts"],
+                              horizontal=True)
+
         if viz_choice == "AI Recommended":
             st.markdown("## AI-Selected Visualizations")
             st.info("AI-chosen visualizations for your data")
-            
+
             for chart in ai_chart_selection(df):
                 st.info(chart["reason"])
                 generate_chart(df, chart)
                 st.divider()
         else:
             st.markdown("## Explore All Visualizations")
-            
+
             num_cols = df.select_dtypes(include=['number']).columns.tolist()
-            
+
             col1, col2, col3 = st.columns(3)
             with col1:
-                chart_type = st.selectbox("Select Chart Type", ["Bar", "Histogram", "Pie", "Scatter", "Box", "Line"])
+                chart_type = st.selectbox(
+                    "Select Chart Type",
+                    ["Bar", "Histogram", "Pie", "Scatter", "Box", "Line"])
             with col2:
                 x_axis = st.selectbox("X-Axis / Category", df.columns.tolist())
             with col3:
-                y_axis = st.selectbox("Y-Axis / Value (if needed)", ["None"] + num_cols)
-            
-            c = {'type': chart_type.lower(), 'x': x_axis, 'y': y_axis if y_axis != "None" else x_axis}
-            
+                y_axis = st.selectbox("Y-Axis / Value (if needed)",
+                                      ["None"] + num_cols)
+
+            c = {
+                'type': chart_type.lower(),
+                'x': x_axis,
+                'y': y_axis if y_axis != "None" else x_axis
+            }
+
             if st.button("Generate Custom Chart"):
                 generate_chart(df, c)
-        
+
         st.markdown("## Correlation Heatmap")
         corr = calculate_correlations(df)
         if corr is not None:
@@ -237,18 +256,20 @@ if uploaded_file:
             if significant:
                 st.success("**Strong Correlations:**")
                 for item in significant:
-                    st.markdown(f"• **{item['var1']}** ↔ **{item['var2']}**: {item['correlation']}")
+                    st.markdown(
+                        f"• **{item['var1']}** ↔ **{item['var2']}**: {item['correlation']}"
+                    )
 
     elif nav_option == "Advanced Analytics":
         st.markdown("## Statistical Analysis")
-        
+
         st.markdown("### Anomaly Detection")
         anomalies = detect_anomalies(df)
         if any(anomalies.values()):
             st.json(anomalies)
         else:
             st.success("No anomalies detected!")
-        
+
         st.markdown("### Outlier Analysis")
         outliers = detailed_outliers(df)
         if outliers:
@@ -263,12 +284,12 @@ if uploaded_file:
                         st.metric("Threshold", info['threshold'])
         else:
             st.success("No outliers detected!")
-        
+
         st.markdown("### Statistical Tests")
         tests = statistical_tests(df)
         if tests:
             st.dataframe(pd.DataFrame(tests), use_container_width=True)
-        
+
         st.markdown("### Time Series Analysis")
         datetime_cols = detect_datetime_columns(df)
         if datetime_cols:
@@ -296,8 +317,10 @@ if uploaded_file:
                 eda = perform_eda(df)
                 anomalies = detect_anomalies(df)
                 corr = calculate_correlations(df)
-                significant = get_significant_correlations(df, 0.7) if corr is not None else []
-                insights = generate_ai_insights(df, eda, anomalies, significant)
+                significant = get_significant_correlations(
+                    df, 0.7) if corr is not None else []
+                insights = generate_ai_insights(df, eda, anomalies,
+                                                significant)
                 st.success(insights)
 
     elif nav_option == "Predictions":
@@ -305,10 +328,15 @@ if uploaded_file:
         num_cols = df.select_dtypes(include='number').columns.tolist()
         if len(num_cols) >= 2:
             target = st.selectbox("Target Column", num_cols)
-            model_type = st.radio("Model Type", ["Regression", "Classification"], horizontal=True)
+            model_type = st.radio("Model Type",
+                                  ["Regression", "Classification"],
+                                  horizontal=True)
             if st.button("Train Model"):
                 with st.spinner("Training..."):
-                    result = simple_regression(df, target) if "Regression" in model_type else classification_model(df, target)
+                    result = simple_regression(
+                        df, target
+                    ) if "Regression" in model_type else classification_model(
+                        df, target)
                     if result:
                         st.success("Model trained!")
                         st.json(result)
@@ -327,6 +355,9 @@ if uploaded_file:
 
     elif nav_option == "Feature Engineering":
         df = feature_engineering_ui(df)
+
+    elif nav_option == "Feature Selection":
+        df = feature_selection_ui(df)
 
     elif nav_option == "Sampling":
         df = data_sampling_ui(df)
@@ -354,8 +385,9 @@ else:
         <h2>👆 Get Started</h2>
         <p style="font-size: 1.2em; color: #667eea;">Upload a CSV, Excel, or JSON file to unlock all features</p>
     </div>
-    """, unsafe_allow_html=True)
-    
+    """,
+                unsafe_allow_html=True)
+
     col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown("""
@@ -363,20 +395,23 @@ else:
         <h3>📊 Smart Visualizations</h3>
         <p>AI-selected charts for your data</p>
         </div>
-        """, unsafe_allow_html=True)
-    
+        """,
+                    unsafe_allow_html=True)
+
     with col2:
         st.markdown("""
         <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-top: 4px solid #667eea;">
         <h3>🤖 AI Insights</h3>
         <p>Intelligent recommendations powered by LLM</p>
         </div>
-        """, unsafe_allow_html=True)
-    
+        """,
+                    unsafe_allow_html=True)
+
     with col3:
         st.markdown("""
         <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); border-top: 4px solid #667eea;">
         <h3>⚡ Advanced ML</h3>
         <p>Clustering, predictions, and explainability</p>
         </div>
-        """, unsafe_allow_html=True)
+        """,
+                    unsafe_allow_html=True)
