@@ -16,7 +16,13 @@ def feature_selection_ui(df):
     col1, col2 = st.columns(2)
     with col1:
         target_col = st.selectbox("Select Target Variable", num_cols)
-        method = st.selectbox("Selection Method", ["Statistical (SelectKBest)", "Model-Based (Random Forest)", "Variance Threshold"])
+        method = st.selectbox("Selection Method", [
+            "Statistical (SelectKBest)", 
+            "Model-Based (Random Forest)", 
+            "Variance Threshold",
+            "Recursive Feature Elimination (RFE)",
+            "Lasso Regularization (L1)"
+        ])
     
     with col2:
         k_features = st.slider("Number of Features to Select", 1, len(num_cols)-1, min(5, len(num_cols)-1) if len(num_cols) > 5 else len(num_cols)-1)
@@ -37,7 +43,6 @@ def feature_selection_ui(df):
                 cols_idx = selector.get_support(indices=True)
                 selected_features = X.columns[cols_idx].tolist()
                 
-                # Show scores
                 scores_df = pd.DataFrame({'Feature': X.columns, 'Score': selector.scores_}).sort_values(by='Score', ascending=False)
                 st.write("Feature Scores:")
                 st.dataframe(scores_df, use_container_width=True)
@@ -58,6 +63,33 @@ def feature_selection_ui(df):
                 cols_idx = selector.get_support(indices=True)
                 selected_features = X.columns[cols_idx].tolist()
                 st.info(f"Selected {len(selected_features)} features based on variance.")
+
+            elif method == "Recursive Feature Elimination (RFE)":
+                from sklearn.feature_selection import RFE
+                from sklearn.linear_model import LogisticRegression, LinearRegression
+                estimator = LogisticRegression(max_iter=1000) if is_classification else LinearRegression()
+                selector = RFE(estimator, n_features_to_select=k_features, step=1)
+                selector = selector.fit(X, y)
+                selected_features = X.columns[selector.support_].tolist()
+                st.write("Feature Rankings (1 is selected):")
+                ranking_df = pd.DataFrame({'Feature': X.columns, 'Ranking': selector.ranking_}).sort_values(by='Ranking')
+                st.dataframe(ranking_df, use_container_width=True)
+
+            elif method == "Lasso Regularization (L1)":
+                from sklearn.linear_model import Lasso, LogisticRegression
+                if is_classification:
+                    model = LogisticRegression(penalty='l1', solver='liblinear', C=1.0)
+                    model.fit(X, y)
+                    coefs = model.coef_[0]
+                else:
+                    model = Lasso(alpha=0.1)
+                    model.fit(X, y)
+                    coefs = model.coef_
+                
+                coef_df = pd.DataFrame({'Feature': X.columns, 'Coefficient': coefs}).sort_values(by='Coefficient', key=abs, ascending=False)
+                selected_features = coef_df.head(k_features)['Feature'].tolist()
+                st.write("Lasso Coefficients:")
+                st.dataframe(coef_df, use_container_width=True)
 
             st.success(f"Top {len(selected_features)} Features: {', '.join(selected_features)}")
             
