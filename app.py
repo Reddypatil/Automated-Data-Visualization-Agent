@@ -117,8 +117,110 @@ st.markdown("""
     <h1>Automated Data Visualization Agent</h1>
     <p>Complete AI-Powered Analytics & Intelligence Platform</p>
 </div>
-""",
-            unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
+# Zoom In / Zoom Out floating widget
+st.markdown("""
+<style>
+    .zoom-controls {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: #1e1e1e;
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid #ff4b4b;
+        box-shadow: 0 4px 20px rgba(255, 75, 75, 0.3);
+    }
+    .zoom-controls span {
+        text-align: center;
+        color: #fafafa;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+    .zoom-btn {
+        background: #ff4b4b;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .zoom-btn:hover {
+        background: #cc3333;
+        transform: scale(1.1);
+    }
+    .zoom-reset-btn {
+        background: #262730;
+        color: #fafafa;
+        border: 1px solid #555;
+        border-radius: 8px;
+        width: 40px;
+        height: 26px;
+        font-size: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .zoom-reset-btn:hover {
+        background: #444;
+    }
+    #zoom-level {
+        text-align: center;
+        color: #ff4b4b;
+        font-size: 12px;
+        font-weight: 700;
+    }
+</style>
+
+<div class="zoom-controls">
+    <span>ZOOM</span>
+    <button class="zoom-btn" onclick="zoomIn()">+</button>
+    <div id="zoom-level">100%</div>
+    <button class="zoom-btn" onclick="zoomOut()">−</button>
+    <button class="zoom-reset-btn" onclick="resetZoom()">Reset</button>
+</div>
+
+<script>
+    var zoomLevel = 1.0;
+
+    function applyZoom() {
+        document.body.style.zoom = zoomLevel;
+        document.getElementById('zoom-level').innerText = Math.round(zoomLevel * 100) + '%';
+    }
+
+    function zoomIn() {
+        if (zoomLevel < 2.0) {
+            zoomLevel = Math.round((zoomLevel + 0.1) * 10) / 10;
+            applyZoom();
+        }
+    }
+
+    function zoomOut() {
+        if (zoomLevel > 0.5) {
+            zoomLevel = Math.round((zoomLevel - 0.1) * 10) / 10;
+            applyZoom();
+        }
+    }
+
+    function resetZoom() {
+        zoomLevel = 1.0;
+        applyZoom();
+    }
+</script>
+""", unsafe_allow_html=True)
 
 # Sidebar
 with st.sidebar:
