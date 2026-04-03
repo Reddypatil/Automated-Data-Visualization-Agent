@@ -30,6 +30,7 @@ from dark_mode import toggle_dark_mode
 from collaborative_features import collaborative_features_ui
 
 from feature_selection import feature_selection_ui
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Automated Data Visualization Agent",
                    layout="wide",
@@ -119,108 +120,94 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Zoom In / Zoom Out floating widget
-st.markdown("""
+# Zoom In / Zoom Out floating widget - uses component to bypass React onclick restrictions
+components.html("""
 <style>
+    body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
     .zoom-controls {
         position: fixed;
-        bottom: 30px;
-        right: 30px;
+        bottom: 20px;
+        right: 10px;
         z-index: 9999;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        align-items: center;
+        gap: 6px;
         background: #1e1e1e;
-        padding: 10px;
+        padding: 10px 8px;
         border-radius: 14px;
         border: 1px solid #ff4b4b;
-        box-shadow: 0 4px 20px rgba(255, 75, 75, 0.3);
+        box-shadow: 0 4px 20px rgba(255,75,75,0.4);
     }
-    .zoom-controls span {
-        text-align: center;
-        color: #fafafa;
-        font-size: 11px;
-        font-weight: 600;
+    .zoom-label {
+        color: #aaa;
+        font-size: 10px;
+        font-weight: 700;
         letter-spacing: 1px;
+        font-family: sans-serif;
     }
     .zoom-btn {
         background: #ff4b4b;
         color: white;
         border: none;
         border-radius: 8px;
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
+        width: 38px;
+        height: 38px;
+        font-size: 22px;
         font-weight: bold;
         cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        transition: background 0.2s, transform 0.15s;
+        line-height: 1;
     }
-    .zoom-btn:hover {
-        background: #cc3333;
-        transform: scale(1.1);
-    }
-    .zoom-reset-btn {
-        background: #262730;
-        color: #fafafa;
-        border: 1px solid #555;
-        border-radius: 8px;
-        width: 40px;
-        height: 26px;
-        font-size: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .zoom-reset-btn:hover {
-        background: #444;
-    }
-    #zoom-level {
-        text-align: center;
+    .zoom-btn:hover { background: #cc2222; transform: scale(1.1); }
+    .zoom-level {
         color: #ff4b4b;
         font-size: 12px;
         font-weight: 700;
+        font-family: monospace;
     }
+    .zoom-reset {
+        background: #333;
+        color: #ccc;
+        border: 1px solid #555;
+        border-radius: 6px;
+        width: 38px;
+        height: 22px;
+        font-size: 9px;
+        cursor: pointer;
+        font-family: sans-serif;
+    }
+    .zoom-reset:hover { background: #555; }
 </style>
 
 <div class="zoom-controls">
-    <span>ZOOM</span>
-    <button class="zoom-btn" onclick="zoomIn()">+</button>
-    <div id="zoom-level">100%</div>
-    <button class="zoom-btn" onclick="zoomOut()">−</button>
-    <button class="zoom-reset-btn" onclick="resetZoom()">Reset</button>
+    <span class="zoom-label">ZOOM</span>
+    <button class="zoom-btn" id="btnIn">+</button>
+    <div class="zoom-level" id="lvl">100%</div>
+    <button class="zoom-btn" id="btnOut">−</button>
+    <button class="zoom-reset" id="btnReset">Reset</button>
 </div>
 
 <script>
-    var zoomLevel = 1.0;
+    var zoom = 1.0;
+    var target = window.parent.document.body;
 
-    function applyZoom() {
-        document.body.style.zoom = zoomLevel;
-        document.getElementById('zoom-level').innerText = Math.round(zoomLevel * 100) + '%';
+    function apply() {
+        target.style.zoom = zoom;
+        document.getElementById('lvl').innerText = Math.round(zoom * 100) + '%';
     }
 
-    function zoomIn() {
-        if (zoomLevel < 2.0) {
-            zoomLevel = Math.round((zoomLevel + 0.1) * 10) / 10;
-            applyZoom();
-        }
-    }
-
-    function zoomOut() {
-        if (zoomLevel > 0.5) {
-            zoomLevel = Math.round((zoomLevel - 0.1) * 10) / 10;
-            applyZoom();
-        }
-    }
-
-    function resetZoom() {
-        zoomLevel = 1.0;
-        applyZoom();
-    }
+    document.getElementById('btnIn').addEventListener('click', function() {
+        if (zoom < 2.0) { zoom = Math.round((zoom + 0.1) * 10) / 10; apply(); }
+    });
+    document.getElementById('btnOut').addEventListener('click', function() {
+        if (zoom > 0.4) { zoom = Math.round((zoom - 0.1) * 10) / 10; apply(); }
+    });
+    document.getElementById('btnReset').addEventListener('click', function() {
+        zoom = 1.0; apply();
+    });
 </script>
-""", unsafe_allow_html=True)
+""", height=180)
 
 # Sidebar
 with st.sidebar:
